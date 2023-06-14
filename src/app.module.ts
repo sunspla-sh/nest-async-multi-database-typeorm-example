@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validate, EnvironmentVariables } from './env.validate';
+import { CatsModule } from './cats/cats.module';
+import { Cat } from './cats/cat.entity';
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { validate, EnvironmentVariables } from './env.validate';
         password: configService.get('MYSQL_DB_PASSWORD'),
         database: configService.get('MYSQL_DB_NAME'),
         synchronize: true,
-        entities: [],
+        entities: [Cat],
       }),
       inject: [ConfigService],
     }),
@@ -36,6 +38,7 @@ import { validate, EnvironmentVariables } from './env.validate';
       }),
       inject: [ConfigService],
     }),
+    CatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
