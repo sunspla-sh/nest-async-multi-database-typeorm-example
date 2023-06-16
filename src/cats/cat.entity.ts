@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { IsInt, Length } from 'class-validator';
-import { ValidatedEntity } from 'src/validated.entity';
+import { ValidatedEntity } from '../validated.entity';
 
 @Entity()
 export class Cat extends ValidatedEntity {
