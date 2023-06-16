@@ -16,6 +16,7 @@ import { Cat } from './cats/cat.entity';
       imports: [ConfigModule],
       name: 'catsConnection',
       useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
+        name: 'catsConnection',
         type: 'mysql',
         host: configService.get('MYSQL_DB_HOST'),
         port: configService.get('MYSQL_DB_PORT'),
@@ -31,6 +32,7 @@ import { Cat } from './cats/cat.entity';
       imports: [ConfigModule],
       name: 'dogsConnection',
       useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
+        name: 'dogsConnection',
         type: 'better-sqlite3',
         database: configService.get('SQLITE_DB_NAME'),
         synchronize: true,
