@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validate, EnvironmentVariables } from './env.validate';
 import { CatsModule } from './cats/cats.module';
 import { Cat } from './cats/cat.entity';
+import {
+  MYSQL_TYPEORM_DATASOURCE_NAME,
+  SQLITE_TYPEORM_DATASOURCE_NAME,
+} from './constants';
 
 @Module({
   imports: [
@@ -14,15 +18,19 @@ import { Cat } from './cats/cat.entity';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      name: 'catsConnection',
-      useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
-        name: 'catsConnection',
-        type: 'mysql',
-        host: configService.get('MYSQL_DB_HOST'),
-        port: configService.get('MYSQL_DB_PORT'),
-        username: configService.get('MYSQL_DB_USERNAME'),
-        password: configService.get('MYSQL_DB_PASSWORD'),
-        database: configService.get('MYSQL_DB_NAME'),
+      name: MYSQL_TYPEORM_DATASOURCE_NAME,
+      useFactory: (
+        configService: ConfigService<EnvironmentVariables>,
+      ): TypeOrmModuleOptions => ({
+        name: MYSQL_TYPEORM_DATASOURCE_NAME,
+        type: configService.get<TypeOrmModuleOptions>('MYSQL_DB_TYPE', {
+          infer: true, //set infer type option to boolean true to make useFactory happy
+        }),
+        host: configService.get<string>('MYSQL_DB_HOST'),
+        port: configService.get<number>('MYSQL_DB_PORT'),
+        username: configService.get<string>('MYSQL_DB_USERNAME'),
+        password: configService.get<string>('MYSQL_DB_PASSWORD'),
+        database: configService.get<string>('MYSQL_DB_NAME'),
         synchronize: true,
         entities: [Cat],
       }),
@@ -30,11 +38,15 @@ import { Cat } from './cats/cat.entity';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      name: 'dogsConnection',
-      useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
-        name: 'dogsConnection',
-        type: 'better-sqlite3',
-        database: configService.get('SQLITE_DB_NAME'),
+      name: SQLITE_TYPEORM_DATASOURCE_NAME,
+      useFactory: (
+        configService: ConfigService<EnvironmentVariables>,
+      ): TypeOrmModuleOptions => ({
+        name: SQLITE_TYPEORM_DATASOURCE_NAME,
+        type: configService.get<TypeOrmModuleOptions>('SQLITE_DB_TYPE', {
+          infer: true, //set infer type option to boolean true to make useFactory happy
+        }),
+        database: configService.get<string>('SQLITE_DB_NAME'),
         synchronize: true,
         entities: [],
       }),

@@ -3,11 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cat } from './cat.entity';
 import { CreateCatDto } from './create-cat.dto';
+import { MYSQL_TYPEORM_DATASOURCE_NAME } from '../constants';
 
 @Injectable()
 export class CatsService {
   constructor(
-    @InjectRepository(Cat, 'catsConnection')
+    @InjectRepository(Cat, MYSQL_TYPEORM_DATASOURCE_NAME)
     private catsRepository: Repository<Cat>,
   ) {}
 

@@ -3,6 +3,9 @@ import { Transform, plainToInstance } from 'class-transformer';
 
 export class EnvironmentVariables {
   @Length(1)
+  MYSQL_DB_TYPE: string;
+
+  @Length(1)
   MYSQL_DB_NAME: string;
 
   @IsInt()
@@ -17,6 +20,9 @@ export class EnvironmentVariables {
 
   @Length(1)
   MYSQL_DB_PASSWORD: string;
+
+  @Length(1)
+  SQLITE_DB_TYPE: string;
 
   @Length(1)
   SQLITE_DB_NAME: string;
