@@ -7,11 +7,13 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { createMock } from '@golevelup/ts-jest';
 import { Repository } from 'typeorm';
-import { CreateCatDto } from 'src/cats/create-cat.dto';
+import { CreateCatDto } from '../src/cats/create-cat.dto';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 describe('Cats', () => {
   let app: INestApplication;
-  let globalValidationPipe = new ValidationPipe({
+  const globalValidationPipe = new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
   });
@@ -103,16 +105,30 @@ describe('Cats', () => {
     it('invalid input', async () => {
       const invalidInput = { junk: 'data' };
 
-      const invalidInputTransformed = await globalValidationPipe.transform(
-        { junk: 'data' },
-        { type: 'body', metatype: Object, data: undefined },
-      );
+      let validationError;
+
+      try {
+        //transform junk data with the expectation of failure and bad request error
+        await globalValidationPipe.transform(
+          { junk: 'data' },
+          { type: 'body', metatype: CreateCatDto, data: undefined },
+        );
+      } catch (err) {
+        //capture bad request error response for later comparison
+        validationError = err.response;
+      }
+
+      // const invalidCreateCatDto = plainToInstance(CreateCatDto, invalidInput);
+      // const errors = await validate(invalidCreateCatDto);
 
       return request(app.getHttpServer())
         .post('/cats')
         .send(invalidInput)
         .expect(400)
-        .expect(invalidInputTransformed);
+        .expect((response: request.Response) => {
+          //compare response body to the expected bad request error response that we previously captured
+          expect(response.body).toEqual(validationError);
+        });
     });
   });
 
