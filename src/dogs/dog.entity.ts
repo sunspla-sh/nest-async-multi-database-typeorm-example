@@ -1,13 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
-
-import { validateOrReject, Length } from 'class-validator';
-import { ValidatedEntity } from 'src/validated.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Length } from 'class-validator';
+import { ValidatedEntity } from '../validated.entity';
 
 @Entity()
 export class Dog extends ValidatedEntity {
@@ -21,10 +14,4 @@ export class Dog extends ValidatedEntity {
   @Column()
   @Length(1, 64)
   breed: string;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  validate(): Promise<void> {
-    return validateOrReject(this);
-  }
 }

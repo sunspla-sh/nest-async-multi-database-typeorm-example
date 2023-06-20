@@ -10,6 +10,8 @@ import {
   MYSQL_TYPEORM_DATASOURCE_NAME,
   SQLITE_TYPEORM_DATASOURCE_NAME,
 } from './constants';
+import { DogsModule } from './dogs/dogs.module';
+import { Dog } from './dogs/dog.entity';
 
 @Module({
   imports: [
@@ -48,11 +50,12 @@ import {
         }),
         database: configService.get<string>('SQLITE_DB_NAME'),
         synchronize: true,
-        entities: [],
+        entities: [Dog],
       }),
       inject: [ConfigService],
     }),
     CatsModule,
+    DogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
