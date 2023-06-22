@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Dog } from './dog.entity';
-import { SQLITE_TYPEORM_DATASOURCE_NAME } from 'src/constants';
+import { SQLITE_TYPEORM_DATASOURCE_NAME } from '../constants';
 import { CreateDogDto } from './create-dog.dto';
 
 @Injectable()
