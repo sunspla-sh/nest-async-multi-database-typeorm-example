@@ -1,7 +1,7 @@
 import { TestingModule, Test } from '@nestjs/testing';
 import { DogsService } from './dogs.service';
 import { Dog } from './dog.entity';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { SQLITE_TYPEORM_DATASOURCE_NAME } from '../constants';
 import { createMock, DeepMocked } from '@golevelup/ts-jest';
@@ -69,6 +69,14 @@ describe('DogsService', () => {
       dogsRepository.save.mockResolvedValue(testDog);
 
       await expect(dogsService.create(createDogDto)).resolves.toEqual(testDog);
+    });
+  });
+
+  describe('remove', () => {
+    it('should delete a dog by id', async () => {
+      dogsRepository.delete.mockResolvedValue(new DeleteResult());
+      dogsService.remove(1);
+      expect(dogsRepository.delete).toBeCalled();
     });
   });
 });
